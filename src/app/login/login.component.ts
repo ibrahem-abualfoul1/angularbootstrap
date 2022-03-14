@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { time } from 'console';
+import { EmailValidator, FormControl, Validators } from '@angular/forms';
 
+import { ActivatedRoute, Router }       from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -9,11 +9,16 @@ import { time } from 'console';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
-  rememberMe: boolean = false;
+  rememberMe:boolean= true ;
+
+
+
+  constructor(private router: Router) {
+    this.rememberMe= false;
+this.AutoLogin();
+   }
+
   ngOnInit(): void {
-    this.rememberMe = false;
-    this.AutoLogin();
   }
   emailControl = new FormControl('', [Validators.required,Validators.email]);
   passwordControl = new FormControl('', [Validators.required,Validators.minLength(8),]);
@@ -21,23 +26,33 @@ export class LoginComponent implements OnInit {
   toggleShowMessage() {
   this.showMessage = !this.showMessage;
   }
-
   submit() {
-
     const passwordValue = this.passwordControl.value;
-    console.log(this.emailControl, passwordValue)
-    ;
-    }
-    AutoLogin(){
-      const accessTokenObj = localStorage.getItem("token");
-      // Retrieve rememberMe value from local storage
-      const rememberMe = localStorage.getItem('rememberMe');
-  console.log(accessTokenObj);
-      if (accessTokenObj && rememberMe == 'yes') {
-        this.router.navigate(['/home']);
-      } else {
-        console.log("You need to login")
-      }
-     }
+    console.log(this.emailControl, passwordValue);
+
+
+          localStorage.setItem("Email", String(this.emailControl));
+          localStorage.setItem("password", String(this.passwordControl));
+console.log(this.rememberMe.valueOf());
+if(this.rememberMe){
+  localStorage.setItem("rememberMe", 'yes');
 }
-/**https://stackoverflow.com/questions/60428490/how-to-trigger-person-click-remember-me-or-not */
+this.router.navigate(['/aboutus']);
+
+    }
+
+ AutoLogin(){
+        const accessTokenObj = localStorage.getItem("Email");
+        // Retrieve rememberMe value from local storage
+        const rememberMe = localStorage.getItem('rememberMe');
+    console.log(accessTokenObj);
+    console.log(rememberMe);
+console.log( rememberMe )
+        if (rememberMe == 'yes') {
+         this.router.navigate(['/home']);
+        } else {
+          console.log("You need to login");
+          console.log(accessTokenObj);
+        }
+       }
+}
